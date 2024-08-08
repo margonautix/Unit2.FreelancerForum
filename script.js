@@ -29,19 +29,46 @@ const freelancers = [
 ];
 
 const addFreelancerIntervalId = setInterval(addFreelancer, 1000);
-console.log(getMean());
-addFreelancer();
-render();
+
+document.addEventListener("DOMContentLoaded", () => {
+  render();
+}); // added due to error, console could not find table
+// update: this is because my <script> was in the <head> and not at the bottom of the <body>. well then!
 
 function render() {
   const table = document.querySelector("#table");
   const tableElements = freelancers.map((freelancer) => {
     const element = document.createElement("tr");
-    element.textContent =
-      freelancer.name + " " + freelancer.occupation + " $" + freelancer.price;
+
+    const nameElement = document.createElement("td");
+    nameElement.textContent = freelancer.name;
+    element.appendChild(nameElement);
+
+    const occElement = document.createElement("td");
+    occElement.textContent = freelancer.occupation;
+    element.appendChild(occElement);
+
+    const priceElement = document.createElement("td");
+    priceElement.textContent = freelancer.price;
+    element.appendChild(priceElement);
+
     return element;
   });
   table.replaceChildren(...tableElements);
+  const headerElement = document.createElement("tr");
+  const nameHeader = document.createElement("th");
+  nameHeader.textContent = "Name";
+  headerElement.appendChild(nameHeader);
+
+  const occHeader = document.createElement("th");
+  occHeader.textContent = "Occupation";
+  headerElement.appendChild(occHeader);
+
+  const priceHeader = document.createElement("th");
+  priceHeader.textContent = "Price";
+  headerElement.appendChild(priceHeader);
+  table.prepend(headerElement);
+  console.log(getMean());
 }
 
 function addFreelancer() {
@@ -57,10 +84,11 @@ function addFreelancer() {
 }
 
 function getMean() {
+  const average = document.querySelector("#average");
   const sumTotal = freelancers.reduce(
-    (acc, price) => acc + freelancers.price,
+    (acc, freelancer) => acc + freelancer.price,
     0
   );
-  //   const mean = sumTotal / freelancers.length;
-  return sumTotal;
+  const mean = Math.floor(sumTotal / freelancers.length);
+  average.innerHTML = `The average starting price is $${mean}.`;
 }
